@@ -1,0 +1,9 @@
+{{define "pagination"}}
+<div class="pager">
+  {{if .HasPrev}}<a class="btn" href="{{.PrevURL}}">← Previous</a>
+  {{else}}<span class="btn disabled">← Previous</span>{{end}}
+  <span class="pager-page">Page {{.Page}}</span>
+  {{if .HasNext}}<a class="btn" href="{{.NextURL}}">Next →</a>
+  {{else}}<span class="btn disabled">Next →</span>{{end}}
+</div>
+{{end}}

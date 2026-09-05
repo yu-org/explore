@@ -1,0 +1,31 @@
+{{define "content"}}
+{{$d := .Data}}
+<div class="page-head">
+  <h1>Address</h1>
+</div>
+<section class="panel">
+  <dl class="detail">
+    <dt>Address</dt><dd class="mono break">{{$d.Address}}</dd>
+    <dt>Transactions</dt><dd>{{comma $d.Count}}</dd>
+  </dl>
+  <p class="note">
+    Transactions where this address is the caller, or where it appears inside the
+    call params or an emitted event.
+  </p>
+</section>
+
+<section class="panel">
+  <header class="panel-head"><h2>Transactions</h2></header>
+  <div class="table-scroll">
+    <table class="data">
+      {{template "tx_table_head"}}
+      <tbody>
+        {{range $d.Txs}}{{template "tx_row" .}}{{else}}
+        <tr><td colspan="7" class="empty">No indexed transactions involve this address.</td></tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  {{template "pagination" $d.List}}
+</section>
+{{end}}

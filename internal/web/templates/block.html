@@ -1,0 +1,50 @@
+{{define "content"}}
+{{$d := .Data}}{{$b := $d.Block}}
+<div class="page-head">
+  <h1>Block <span class="mono">#{{comma $b.Height}}</span></h1>
+  <div class="stepper">
+    {{if $d.Prev}}<a class="btn" href="/block/{{$d.Prev}}" title="Previous block">←</a>
+    {{else}}<span class="btn disabled">←</span>{{end}}
+    {{if $d.Next}}<a class="btn" href="/block/{{$d.Next}}" title="Next block">→</a>
+    {{else}}<span class="btn disabled">→</span>{{end}}
+  </div>
+</div>
+
+<section class="panel">
+  <dl class="detail">
+    <dt>Height</dt><dd class="mono">{{comma $b.Height}}</dd>
+    <dt>Hash</dt><dd class="mono break">{{$b.Hash}}</dd>
+    <dt>Parent Hash</dt>
+    <dd class="mono break">{{if $d.Prev}}<a href="/block/{{$b.PrevHash}}">{{$b.PrevHash}}</a>{{else}}{{$b.PrevHash}}{{end}}</dd>
+    <dt>Timestamp</dt><dd>{{formatTime $b.Timestamp}} <span class="muted">({{timeAgo $b.Timestamp}})</span></dd>
+    <dt>Transactions</dt>
+    <dd>{{if $b.TxCount}}<a href="#txns">{{$b.TxCount}} transactions</a>{{else}}<span class="muted">none</span>{{end}}</dd>
+    <dt>Lei Used</dt>
+    <dd>{{comma $b.LeiUsed}} <span class="muted">/ {{comma $b.LeiLimit}} ({{percent $b.LeiUsed $b.LeiLimit}}%)</span>
+      <div class="meter"><i style="width:{{percent $b.LeiUsed $b.LeiLimit}}%"></i></div>
+    </dd>
+    <dt>State Root</dt><dd class="mono break">{{$b.StateRoot}}</dd>
+    <dt>Txn Root</dt><dd class="mono break">{{$b.TxnRoot}}</dd>
+    <dt>Receipt Root</dt><dd class="mono break">{{$b.ReceiptRoot}}</dd>
+    <dt>Proposer (Peer ID)</dt><dd class="mono break">{{if $b.PeerID}}{{$b.PeerID}}{{else}}—{{end}}</dd>
+    <dt>Miner Pubkey</dt><dd class="mono break">{{if $b.MinerPubkey}}{{$b.MinerPubkey}}{{else}}—{{end}}</dd>
+    <dt>Chain ID</dt><dd class="mono">{{$b.ChainID}}</dd>
+    {{if $b.Difficulty}}<dt>Difficulty</dt><dd class="mono">{{comma $b.Difficulty}}</dd>{{end}}
+    {{if $b.Nonce}}<dt>Nonce</dt><dd class="mono">{{comma $b.Nonce}}</dd>{{end}}
+  </dl>
+</section>
+
+<section class="panel" id="txns">
+  <header class="panel-head"><h2>Transactions in this block</h2></header>
+  <div class="table-scroll">
+    <table class="data">
+      {{template "tx_table_head"}}
+      <tbody>
+        {{range $d.Txs}}{{template "tx_row" .}}{{else}}
+        <tr><td colspan="7" class="empty">This block is empty.</td></tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+</section>
+{{end}}

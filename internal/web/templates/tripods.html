@@ -1,0 +1,24 @@
+{{define "content"}}
+<section class="panel">
+  <header class="panel-head"><h2>Tripods &amp; Writings</h2></header>
+  <p class="note">
+    Every writing the indexer has seen executed on this chain, and how often.
+  </p>
+  <div class="table-scroll">
+    <table class="data">
+      <thead><tr><th>Tripod</th><th>Writing</th><th class="num">Transactions</th></tr></thead>
+      <tbody>
+        {{range .Data}}
+        <tr>
+          <td><span class="pill">{{.Tripod}}</span></td>
+          <td><span class="pill pill-alt">{{.Writing}}</span></td>
+          <td class="num">{{comma .Count}}</td>
+        </tr>
+        {{else}}
+        <tr><td colspan="3" class="empty">No writings indexed yet.</td></tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+</section>
+{{end}}

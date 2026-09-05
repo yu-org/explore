@@ -1,0 +1,63 @@
+{{define "content"}}
+{{$d := .Data}}
+<section class="stats">
+  <div class="stat">
+    <span class="stat-label">Latest Block</span>
+    <span class="stat-value" id="stat-height">{{comma $d.Stats.LatestHeight}}</span>
+    <span class="stat-note">chain id {{$d.Stats.ChainID}}</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Transactions</span>
+    <span class="stat-value" id="stat-txs">{{comma $d.Stats.TotalTxs}}</span>
+    <span class="stat-note">{{comma $d.Stats.IndexedBlocks}} blocks indexed</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Avg Block Time</span>
+    <span class="stat-value" id="stat-blocktime">{{round1 $d.Stats.AvgBlockTime}}s</span>
+    <span class="stat-note">last 100 blocks</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">TPS</span>
+    <span class="stat-value" id="stat-tps">{{round2 $d.Stats.TPS}}</span>
+    <span class="stat-note">last 100 blocks</span>
+  </div>
+</section>
+
+<div class="split">
+  <section class="panel">
+    <header class="panel-head">
+      <h2>Latest Blocks</h2>
+      <span class="live" title="Live updates over server-sent events"><i></i>live</span>
+    </header>
+    <div class="table-scroll">
+      <table class="data">
+        {{template "home_block_table_head"}}
+        <tbody id="live-blocks" data-max-rows="{{$d.RowLimit}}">
+          {{range $d.Blocks}}{{template "home_block_row" .}}{{else}}
+          <tr class="empty-row"><td colspan="4" class="empty">Waiting for the indexer to catch up…</td></tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+    <footer class="panel-foot"><a href="/blocks">View all blocks →</a></footer>
+  </section>
+
+  <section class="panel">
+    <header class="panel-head">
+      <h2>Latest Transactions</h2>
+      <span class="live"><i></i>live</span>
+    </header>
+    <div class="table-scroll">
+      <table class="data">
+        {{template "home_tx_table_head"}}
+        <tbody id="live-txs" data-max-rows="{{$d.RowLimit}}">
+          {{range $d.Txs}}{{template "home_tx_row" .}}{{else}}
+          <tr class="empty-row"><td colspan="5" class="empty">No transactions indexed yet.</td></tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+    <footer class="panel-foot"><a href="/txs">View all transactions →</a></footer>
+  </section>
+</div>
+{{end}}

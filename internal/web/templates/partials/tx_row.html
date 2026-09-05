@@ -1,0 +1,14 @@
+{{define "tx_row"}}
+<tr>
+  <td class="mono"><a href="/tx/{{.Hash}}">{{shortHash .Hash 18}}</a></td>
+  <td><a class="mono" href="/block/{{.Height}}">{{.Height}}</a></td>
+  <td class="muted nowrap" data-ts="{{.Timestamp}}">{{timeAgo .Timestamp}}</td>
+  <td class="nowrap"><span class="pill">{{.Tripod}}</span><span class="pill-arrow">·</span><span class="pill pill-alt">{{.Writing}}</span></td>
+  <td class="mono">
+    {{if .Caller}}<a href="/address/{{.Caller}}">{{shortHash .Caller 14}}</a>
+    {{else}}<span class="muted">—</span>{{end}}
+  </td>
+  <td class="num">{{comma .LeiCost}}</td>
+  <td><span class="badge {{if .Success}}badge-ok{{else}}badge-fail{{end}}">{{.Status}}</span></td>
+</tr>
+{{end}}

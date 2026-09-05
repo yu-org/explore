@@ -1,0 +1,17 @@
+{{define "content"}}
+{{$d := .Data}}
+<section class="panel">
+  <header class="panel-head"><h2>Blocks</h2></header>
+  <div class="table-scroll">
+    <table class="data">
+      {{template "block_table_head"}}
+      <tbody>
+        {{range $d.Blocks}}{{template "block_row" .}}{{else}}
+        <tr><td colspan="7" class="empty">No blocks indexed yet.</td></tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  {{template "pagination" $d.List}}
+</section>
+{{end}}

@@ -1,0 +1,10 @@
+# build output
+/explore
+/devnode
+
+# local index and dev chain data
+*.db
+*.db-wal
+*.db-shm
+/devnet-data/
+/yu/

@@ -1,0 +1,36 @@
+{{define "content"}}
+{{$t := .Data}}
+<div class="page-head">
+  <h1>Transaction</h1>
+  <span class="badge {{if $t.Success}}badge-ok{{else}}badge-fail{{end}}">{{$t.Status}}</span>
+</div>
+
+<section class="panel">
+  <dl class="detail">
+    <dt>Hash</dt><dd class="mono break">{{$t.Hash}}</dd>
+    {{if $t.Error}}<dt>Error</dt><dd><div class="error-text mono">{{$t.Error}}</div></dd>{{end}}
+    <dt>Block</dt>
+    <dd><a class="mono" href="/block/{{$t.Height}}">{{comma $t.Height}}</a>
+      <span class="muted mono">· index {{$t.Index}}</span></dd>
+    <dt>Timestamp</dt><dd>{{formatTime $t.Timestamp}} <span class="muted">({{timeAgo $t.Timestamp}})</span></dd>
+    <dt>Caller</dt>
+    <dd class="mono break">
+      {{if $t.Caller}}<a href="/address/{{$t.Caller}}">{{$t.Caller}}</a>{{else}}<span class="muted">unknown</span>{{end}}
+    </dd>
+    <dt>Writing</dt>
+    <dd><span class="pill">{{$t.Tripod}}</span><span class="pill-arrow">·</span><span class="pill pill-alt">{{$t.Writing}}</span></dd>
+    <dt>Lei Cost</dt>
+    <dd>{{comma $t.LeiCost}} <span class="muted">· price {{comma $t.LeiPrice}} · tips {{comma $t.Tips}}</span></dd>
+    <dt>Params</dt>
+    <dd>{{if $t.Params}}<pre class="code">{{prettyJSON $t.Params}}</pre>{{else}}<span class="muted">none</span>{{end}}</dd>
+    <dt>Events</dt>
+    <dd>
+      {{if $t.Events}}
+      <ul class="events">{{range $t.Events}}<li class="mono">{{.}}</li>{{end}}</ul>
+      {{else}}<span class="muted">none</span>{{end}}
+    </dd>
+    <dt>Public Key</dt><dd class="mono break">{{if $t.Pubkey}}{{$t.Pubkey}}{{else}}—{{end}}</dd>
+    <dt>Signature</dt><dd class="mono break">{{if $t.Signature}}{{$t.Signature}}{{else}}—{{end}}</dd>
+  </dl>
+</section>
+{{end}}

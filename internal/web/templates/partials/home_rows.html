@@ -1,0 +1,32 @@
+{{define "home_block_table_head"}}
+<thead><tr><th>Block</th><th>Age</th><th>Txns</th><th class="num">Lei Used</th></tr></thead>
+{{end}}
+
+{{define "home_block_row"}}
+<tr>
+  <td><a class="mono strong" href="/block/{{.Height}}">{{.Height}}</a></td>
+  <td class="muted nowrap" data-ts="{{.Timestamp}}">{{timeAgo .Timestamp}}</td>
+  <td class="nowrap">
+    {{if .TxCount}}<a href="/block/{{.Height}}#txns">{{.TxCount}} txns</a>
+    {{else}}<span class="muted">0 txns</span>{{end}}
+  </td>
+  <td class="num">{{comma .LeiUsed}}</td>
+</tr>
+{{end}}
+
+{{define "home_tx_table_head"}}
+<thead><tr><th>Tx Hash</th><th>Age</th><th>Writing</th><th>Caller</th><th>Status</th></tr></thead>
+{{end}}
+
+{{define "home_tx_row"}}
+<tr>
+  <td class="mono"><a href="/tx/{{.Hash}}">{{shortHash .Hash 14}}</a></td>
+  <td class="muted nowrap" data-ts="{{.Timestamp}}">{{timeAgo .Timestamp}}</td>
+  <td class="nowrap"><span class="pill">{{.Tripod}}</span><span class="pill-arrow">·</span><span class="pill pill-alt">{{.Writing}}</span></td>
+  <td class="mono">
+    {{if .Caller}}<a href="/address/{{.Caller}}">{{shortHash .Caller 10}}</a>
+    {{else}}<span class="muted">—</span>{{end}}
+  </td>
+  <td><span class="badge {{if .Success}}badge-ok{{else}}badge-fail{{end}}">{{.Status}}</span></td>
+</tr>
+{{end}}

@@ -1,0 +1,14 @@
+{{define "block_row"}}
+<tr>
+  <td><a class="mono strong" href="/block/{{.Height}}">{{.Height}}</a></td>
+  <td class="muted nowrap" data-ts="{{.Timestamp}}">{{timeAgo .Timestamp}}</td>
+  <td class="muted nowrap">{{formatTime .Timestamp}}</td>
+  <td class="nowrap">
+    {{if .TxCount}}<a href="/block/{{.Height}}#txns">{{.TxCount}} txns</a>
+    {{else}}<span class="muted">0 txns</span>{{end}}
+  </td>
+  <td class="mono"><a href="/block/{{.Hash}}">{{shortHash .Hash 20}}</a></td>
+  <td class="mono muted">{{if .PeerID}}{{shortHash .PeerID 14}}{{else}}—{{end}}</td>
+  <td class="num">{{comma .LeiUsed}}</td>
+</tr>
+{{end}}

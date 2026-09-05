@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} | {{.ChainName}} Explorer</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>禹</text></svg>">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="/">
+      <span class="brand-mark">禹</span>
+      <span class="brand-name">{{.ChainName}}<em>Explorer</em></span>
+    </a>
+    <nav class="nav">
+      <a href="/" {{if eq .Nav "home"}}class="active"{{end}}>Home</a>
+      <a href="/blocks" {{if eq .Nav "blocks"}}class="active"{{end}}>Blocks</a>
+      <a href="/txs" {{if eq .Nav "txs"}}class="active"{{end}}>Transactions</a>
+      <a href="/tripods" {{if eq .Nav "tripods"}}class="active"{{end}}>Tripods</a>
+    </nav>
+    <form class="search" action="/search" method="get" role="search">
+      <input type="search" name="q" value="{{.Query}}" autocomplete="off" spellcheck="false"
+             placeholder="Search by height / block hash / tx hash / address">
+      <button type="submit" aria-label="Search">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path>
+        </svg>
+      </button>
+    </form>
+  </div>
+</header>
+
+<main class="wrap main">
+{{template "content" .}}
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span>{{.ChainName}} Explorer — an open block explorer for the
+      <a href="https://github.com/yu-org/yu">yu</a> framework.</span>
+    {{if .NodeURL}}<span class="muted mono">node: {{.NodeURL}}</span>{{end}}
+  </div>
+</footer>
+
+<script src="/static/app.js" defer></script>
+</body>
+</html>
