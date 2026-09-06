@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/yu-org/yu/config"
 )
 
 //go:embed templates/*.html templates/partials/*.html
@@ -31,6 +33,7 @@ var funcs = template.FuncMap{
 	"comma":      comma,
 	"prettyJSON": prettyJSON,
 	"percent":    percent,
+	"netClass":   netClass,
 	"round2":     func(f float64) string { return fmt.Sprintf("%.2f", f) },
 	"round1":     func(f float64) string { return fmt.Sprintf("%.1f", f) },
 }
@@ -176,6 +179,22 @@ func prettyJSON(s string) string {
 		return s
 	}
 	return string(out)
+}
+
+// netClass maps chain_spec.network onto the handful of CSS classes the badge
+// has colours for. The value is free-form in the config file, so anything
+// yu does not name gets the neutral class rather than a made-up selector.
+func netClass(network string) string {
+	switch strings.ToLower(strings.TrimSpace(network)) {
+	case config.Mainnet:
+		return "mainnet"
+	case config.Testnet:
+		return "testnet"
+	case config.Devnet:
+		return "devnet"
+	default:
+		return "other"
+	}
 }
 
 func percent(used, limit uint64) string {

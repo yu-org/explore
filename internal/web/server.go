@@ -7,7 +7,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
+
+	"github.com/yu-org/yu/config"
 
 	"github.com/yu-org/explore/internal/model"
 	"github.com/yu-org/explore/internal/store"
@@ -18,8 +21,11 @@ type Logger interface {
 }
 
 type Options struct {
-	// ChainName is shown in the header and page titles.
-	ChainName string
+	// ChainSpec is the identity of the chain as the node declares it. It is
+	// what the header and footer show. The node is asked for it after startup,
+	// so callers usually leave this empty and call SetChainSpec once the
+	// answer arrives.
+	ChainSpec config.ChainSpec
 	// NodeURL is displayed in the footer so users know what they are looking at.
 	NodeURL string
 }
@@ -31,6 +37,11 @@ type Server struct {
 	mux   *http.ServeMux
 	opts  Options
 	log   Logger
+
+	// The chain spec arrives from the node after the server is already
+	// serving, so pages read it under a lock.
+	specMu sync.RWMutex
+	spec   config.ChainSpec
 }
 
 func New(st store.Store, opts Options, log Logger) (*Server, error) {
@@ -38,12 +49,27 @@ func New(st store.Store, opts Options, log Logger) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	if opts.ChainName == "" {
-		opts.ChainName = "Yu"
-	}
 	s := &Server{store: st, rend: rend, hub: newHub(), mux: http.NewServeMux(), opts: opts, log: log}
+	s.SetChainSpec(opts.ChainSpec)
 	s.routes()
 	return s, nil
+}
+
+// SetChainSpec updates the identity shown across the UI. It is called once the
+// node answers /api/chain_spec, which may be after the first page is served.
+// Fields the caller leaves empty fall back to yu's own defaults, so the header
+// never renders blank.
+func (s *Server) SetChainSpec(spec config.ChainSpec) {
+	spec.FillDefaults()
+	s.specMu.Lock()
+	defer s.specMu.Unlock()
+	s.spec = spec
+}
+
+func (s *Server) chainSpec() config.ChainSpec {
+	s.specMu.RLock()
+	defer s.specMu.RUnlock()
+	return s.spec
 }
 
 func (s *Server) routes() {
