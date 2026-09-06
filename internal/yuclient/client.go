@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/yu-org/yu/config"
+	"github.com/yu-org/yu/core/protocol"
 	"github.com/yu-org/yu/core/types"
 )
 
@@ -80,6 +82,19 @@ func (c *Client) get(ctx context.Context, path string, query url.Values, out any
 		return ErrNotFound
 	}
 	return json.Unmarshal(api.Data, out)
+}
+
+// ChainSpec returns how the chain describes itself: name, author, version and
+// network. The node fills in its own defaults before answering, so what comes
+// back is exactly the identity it prints in its startup banner.
+//
+// Nodes older than yu v1.3.6 do not serve this endpoint and answer 404.
+func (c *Client) ChainSpec(ctx context.Context) (config.ChainSpec, error) {
+	var spec config.ChainSpec
+	if err := c.get(ctx, protocol.ChainSpecPath, nil, &spec); err != nil {
+		return config.ChainSpec{}, err
+	}
+	return spec, nil
 }
 
 // LatestBlock returns the node's current end block.

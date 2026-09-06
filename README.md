@@ -28,12 +28,34 @@ go run ./cmd/explore                 # terminal 2 — explorer on :8080
 | `-node` | `http://localhost:7999` | yu node HTTP API endpoint |
 | `-listen` | `:8080` | address to serve the UI on |
 | `-db` | `explore.db` | path to the index database |
-| `-chain-name` | `Yu` | name shown in the header and page titles |
 | `-poll` | `1s` | how often to ask the node for its head |
 | `-start-height` | `1` | first block to index |
 
 The index is rebuilt from the node, so deleting the database file re-syncs from
 scratch.
+
+## Chain identity
+
+The name in the header, the network badge next to it and the version in the
+footer are not the explorer's to choose: it asks the node for them over
+`GET /api/chain_spec` (yu v1.3.6 and later) and shows what comes back — the
+`[chain_spec]` section of the node's `kernel.toml`:
+
+```toml
+[chain_spec]
+chain_name = "Yu"
+author = "yu-org"
+version = "v1.0.0"
+# mainnet / testnet / devnet
+network = "devnet"
+```
+
+That is the same identity the node prints in its startup banner. The explorer
+keeps asking until the node answers, so it can be started first; against a node
+older than v1.3.6 the endpoint is missing and yu's own defaults are shown.
+
+`devnode` takes `-chain-name`, `-network`, `-chain-version` and `-author` if you
+want to watch a different identity appear in the UI.
 
 ## Search
 

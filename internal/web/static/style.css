@@ -95,7 +95,13 @@ a:hover { color: var(--link-hover); text-decoration: underline; }
   padding-top: 8px;
   padding-bottom: 8px;
 }
-.brand { display: flex; align-items: center; gap: 9px; color: var(--topbar-ink); }
+/* The chain's identity: name, version and network, straight from the node's
+   chain_spec. They read as one unit, so they are grouped and spaced together
+   rather than inheriting the wide gap between top-bar sections. */
+.chain { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.chain-meta { display: flex; align-items: center; gap: 6px; }
+
+.brand { display: flex; align-items: center; gap: 9px; color: var(--topbar-ink); min-width: 0; }
 .brand:hover { text-decoration: none; opacity: .9; }
 .brand-mark {
   width: 30px; height: 30px; border-radius: 8px;
@@ -103,8 +109,40 @@ a:hover { color: var(--link-hover); text-decoration: underline; }
   display: grid; place-items: center;
   font-size: 17px; font-weight: 700; color: #fff;
 }
-.brand-name { font-size: 16px; font-weight: 650; letter-spacing: -.01em; }
-.brand-name em { font-style: normal; font-weight: 400; color: var(--topbar-muted); margin-left: 6px; }
+.brand-name {
+  font-size: 16px; font-weight: 650; letter-spacing: -.01em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* chain_spec.version, as a quiet pill so it pairs with the network badge
+   beside it without competing with the chain's name. */
+.chain-version {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .1);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--topbar-ink);
+  white-space: nowrap;
+}
+
+/* chain_spec.network. Its colours mirror the banner yu prints at startup, so a
+   chain looks the same in the terminal and in the browser. The badge always
+   sits on the dark top bar, so these are literal colours, not theme tokens. */
+.net {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+.net-mainnet { background: #c0392b; }
+.net-testnet { background: #b7791f; }
+.net-devnet  { background: #2c5fd1; }
+.net-other   { background: #7b3fa0; }
 
 .nav { display: flex; gap: 4px; margin-right: auto; }
 .nav a {
@@ -388,3 +426,5 @@ ul.events li { padding: 2px 0; word-break: break-all; }
   font-size: 12.5px;
   color: var(--muted);
 }
+/* chain_spec.version and .author, next to the node this index came from. */
+.footer .spec { display: flex; gap: 14px; flex-wrap: wrap; }

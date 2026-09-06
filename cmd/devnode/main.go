@@ -28,6 +28,13 @@ func main() {
 		reset    = flag.Bool("reset", false, "wipe the data directory before starting")
 		interval = flag.Int("block-interval", 3000, "block interval in milliseconds")
 		traffic  = flag.Duration("traffic", 5*time.Second, "interval between generated transactions; 0 disables traffic")
+
+		// The chain's own identity, served over /api/chain_spec and shown by
+		// the explorer. Empty means "whatever yu defaults to".
+		chainName = flag.String("chain-name", "", "chain_spec.chain_name of this devnet")
+		network   = flag.String("network", "", "chain_spec.network: mainnet, testnet or devnet")
+		version   = flag.String("chain-version", "", "chain_spec.version of this devnet")
+		author    = flag.String("author", "", "chain_spec.author of this devnet")
 	)
 	flag.Parse()
 
@@ -38,6 +45,7 @@ func main() {
 	}
 
 	cfg := config.InitDefaultCfg()
+	overrideChainSpec(&cfg.ChainSpec, *chainName, *network, *version, *author)
 	cfg.DataDir = *dataDir
 	cfg.LogOutput = path.Join(*dataDir, "yu.log")
 	cfg.IsAdmin = true
@@ -57,6 +65,24 @@ func main() {
 	startup.InitDefaultKernel(cfg).
 		WithTripods(poa.NewPoa(poaCfg), asset.NewAsset("YuCoin")).
 		Startup()
+}
+
+// overrideChainSpec applies the flags that were actually set, leaving the rest
+// of yu's default spec alone.
+func overrideChainSpec(spec *config.ChainSpec, name, network, version, author string) {
+	for _, f := range []struct {
+		value string
+		field *string
+	}{
+		{name, &spec.ChainName},
+		{network, &spec.Network},
+		{version, &spec.Version},
+		{author, &spec.Author},
+	} {
+		if f.value != "" {
+			*f.field = f.value
+		}
+	}
 }
 
 // generateTraffic funds a faucet account and then keeps sending transfers so

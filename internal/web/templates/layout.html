@@ -10,10 +10,16 @@
 <body>
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a class="brand" href="/">
-      <span class="brand-mark">禹</span>
-      <span class="brand-name">{{.ChainName}}<em>Explorer</em></span>
-    </a>
+    <div class="chain">
+      <a class="brand" href="/">
+        <span class="brand-mark">禹</span>
+        <span class="brand-name">{{.ChainName}}</span>
+      </a>
+      <span class="chain-meta">
+        {{if .Version}}<span class="chain-version" title="chain_spec.version">{{.Version}}</span>{{end}}
+        {{if .Network}}<span class="net net-{{netClass .Network}}" title="chain_spec.network">{{.Network}}</span>{{end}}
+      </span>
+    </div>
     <nav class="nav">
       <a href="/" {{if eq .Nav "home"}}class="active"{{end}}>Home</a>
       <a href="/blocks" {{if eq .Nav "blocks"}}class="active"{{end}}>Blocks</a>
@@ -40,7 +46,10 @@
   <div class="wrap footer-inner">
     <span>{{.ChainName}} Explorer — an open block explorer for the
       <a href="https://github.com/yu-org/yu">yu</a> framework.</span>
-    {{if .NodeURL}}<span class="muted mono">node: {{.NodeURL}}</span>{{end}}
+    <span class="muted mono spec">
+      {{if .Author}}<span title="chain_spec.author">by {{.Author}}</span>{{end}}
+      {{if .NodeURL}}<span title="the node this index is built from">node: {{.NodeURL}}</span>{{end}}
+    </span>
   </div>
 </footer>
 

@@ -4,7 +4,7 @@ go 1.26.2
 
 require (
 	github.com/sirupsen/logrus v1.9.3
-	github.com/yu-org/yu v1.3.4
+	github.com/yu-org/yu v1.3.6
 	modernc.org/sqlite v1.58.0
 )
 

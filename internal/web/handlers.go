@@ -20,20 +20,29 @@ const (
 var addressPattern = regexp.MustCompile(`^0x[0-9a-f]{40}$`)
 
 // pageData is what every template receives. Page-specific values hang off Data.
+// ChainName, Network, Version and Author come straight from the node's
+// [chain_spec]; the explorer never substitutes a name of its own.
 type pageData struct {
 	Title     string
 	Nav       string
 	ChainName string
+	Network   string
+	Version   string
+	Author    string
 	NodeURL   string
 	Query     string
 	Data      any
 }
 
 func (s *Server) page(title, nav string, data any) pageData {
+	spec := s.chainSpec()
 	return pageData{
 		Title:     title,
 		Nav:       nav,
-		ChainName: s.opts.ChainName,
+		ChainName: spec.ChainName,
+		Network:   spec.Network,
+		Version:   spec.Version,
+		Author:    spec.Author,
 		NodeURL:   s.opts.NodeURL,
 		Data:      data,
 	}
@@ -330,14 +339,10 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) searchMiss(w http.ResponseWriter, q, detail string) {
-	s.rend.render(w, http.StatusNotFound, "error.html", pageData{
-		Title:     "No results",
-		ChainName: s.opts.ChainName,
-		NodeURL:   s.opts.NodeURL,
-		Query:     q,
-		Data: map[string]string{
-			"Heading": "No results for “" + q + "”",
-			"Detail":  detail,
-		},
+	page := s.page("No results", "", map[string]string{
+		"Heading": "No results for “" + q + "”",
+		"Detail":  detail,
 	})
+	page.Query = q
+	s.rend.render(w, http.StatusNotFound, "error.html", page)
 }

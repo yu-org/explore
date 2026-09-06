@@ -5,6 +5,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/yu-org/yu/config"
+
 	"github.com/yu-org/explore/internal/model"
 )
 
@@ -64,6 +66,55 @@ func TestRenderPartialsMatchPageMarkup(t *testing.T) {
 	for _, want := range []string{`href="/tx/0xdef"`, "badge-ok", "Transfer"} {
 		if !strings.Contains(txRow, want) {
 			t.Errorf("tx row missing %q: %s", want, txRow)
+		}
+	}
+}
+
+// The header and footer must show what the node calls itself, never a name the
+// explorer picked. This renders a spec that shares nothing with yu's defaults, so
+// a hardcoded fallback creeping back in would fail here.
+func TestRenderShowsChainSpec(t *testing.T) {
+	rend, err := newRenderer()
+	if err != nil {
+		t.Fatalf("newRenderer: %v", err)
+	}
+
+	rec := httptest.NewRecorder()
+	rend.render(rec, 200, "home.html", pageData{
+		Title:     "Home",
+		Nav:       "home",
+		ChainName: "Liberty",
+		Network:   config.Testnet,
+		Version:   "v2.1.0",
+		Author:    "someone",
+		Data:      homeData{Stats: &model.ChainStats{}},
+	})
+
+	body := rec.Body.String()
+	for _, want := range []string{
+		"<title>Home | Liberty Explorer</title>",
+		`class="net net-testnet"`,
+		">testnet<",
+		">v2.1.0<",
+		"by someone",
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("page missing %q", want)
+		}
+	}
+	if strings.Contains(body, "Yu Explorer") {
+		t.Error("page shows a chain name the node never reported")
+	}
+}
+
+func TestNetClass(t *testing.T) {
+	tests := map[string]string{
+		"mainnet": "mainnet", "testnet": "testnet", "devnet": "devnet",
+		"  DevNet ": "devnet", "staging": "other", "": "other",
+	}
+	for in, want := range tests {
+		if got := netClass(in); got != want {
+			t.Errorf("netClass(%q) = %q, want %q", in, got, want)
 		}
 	}
 }
