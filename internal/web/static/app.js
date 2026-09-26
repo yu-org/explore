@@ -13,6 +13,7 @@
     connect();
   }
   startClock();
+  bindSearchKey();
 
   function connect() {
     var source = new EventSource("/stream");
@@ -73,6 +74,20 @@
     if (value === undefined || value === null || value === "") return;
     var el = document.getElementById(id);
     if (el && el.textContent !== value) el.textContent = value;
+  }
+
+  // "/" focuses the search box from anywhere that isn't already a text field.
+  function bindSearchKey() {
+    var input = document.querySelector(".search input");
+    if (!input) return;
+    document.addEventListener("keydown", function (event) {
+      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) return;
+      var tag = (document.activeElement && document.activeElement.tagName) || "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      event.preventDefault();
+      input.focus();
+      input.select();
+    });
   }
 
   // Ages are rendered server-side and would otherwise freeze on the page.

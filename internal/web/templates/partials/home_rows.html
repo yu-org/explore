@@ -20,7 +20,7 @@
 
 {{define "home_tx_row"}}
 <tr>
-  <td class="mono"><a href="/tx/{{.Hash}}">{{shortHash .Hash 14}}</a></td>
+  <td class="mono"><a href="/tx/{{.Hash}}">{{shortHash .Hash 12}}</a></td>
   <td class="muted nowrap" data-ts="{{.Timestamp}}">{{timeAgo .Timestamp}}</td>
   <td class="nowrap"><span class="pill">{{.Tripod}}</span><span class="pill-arrow">·</span><span class="pill pill-alt">{{.Writing}}</span></td>
   <td class="mono">

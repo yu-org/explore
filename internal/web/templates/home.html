@@ -11,12 +11,12 @@
     <span class="stat-value" id="stat-txs">{{comma $d.Stats.TotalTxs}}</span>
     <span class="stat-note">{{comma $d.Stats.IndexedBlocks}} blocks indexed</span>
   </div>
-  <div class="stat">
+  <div class="stat stat-amber">
     <span class="stat-label">Avg Block Time</span>
     <span class="stat-value" id="stat-blocktime">{{round1 $d.Stats.AvgBlockTime}}s</span>
     <span class="stat-note">last 100 blocks</span>
   </div>
-  <div class="stat">
+  <div class="stat stat-amber">
     <span class="stat-label">TPS</span>
     <span class="stat-value" id="stat-tps">{{round2 $d.Stats.TPS}}</span>
     <span class="stat-note">last 100 blocks</span>
