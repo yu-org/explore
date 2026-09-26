@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{.Title}} | {{.ChainName}} Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/static/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>禹</text></svg>">
 </head>
@@ -27,8 +30,10 @@
       <a href="/tripods" {{if eq .Nav "tripods"}}class="active"{{end}}>Tripods</a>
     </nav>
     <form class="search" action="/search" method="get" role="search">
+      <span class="search-prompt" aria-hidden="true">&gt;</span>
       <input type="search" name="q" value="{{.Query}}" autocomplete="off" spellcheck="false"
-             placeholder="Search by height / block hash / tx hash / address">
+             placeholder="Search height / block / tx / address ...">
+      <span class="kbd" title="Press / to search">/</span>
       <button type="submit" aria-label="Search">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2">
           <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path>
